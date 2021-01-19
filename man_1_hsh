@@ -1,0 +1,21 @@
+.TH man 1 "11 Jan 2021" "1.0" "hsh man page"
+
+.SH NAME
+hsh - custom command interpreter
+
+.SH SYNOPSIS
+hsh [options]
+echo [options] | ./hsh
+cat [filename] | ./hsh
+
+.SH DESCRIPTION
+hsh is command interpreter (shell) with functionality including pipes, redirects, command separators, and more.
+
+.SH SEE ALSO
+sh(1), bash(1)
+
+.SH BUGS
+No known bugs.
+
+.SH AUTHOR
+J.I. Cruz (ji@jicruz.com), Gabriel Abdul-Raheem (gabrielabdul1@gmail.com).
