@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+
+#define END(x) (!(x) || (x) == ' ' || (x) == '.' || (x) == '/' || (x) == ',')
 /**
  * replace_vars - detects an replaces variables in a shell token
  * @token: token
@@ -9,41 +11,44 @@
  **/
 char *replace_vars(char *token)
 {
-	char *new_token, *value;
-	int i;
+	int i, j, k, l;
+	char buffer[256], value[256], *variable;
 
 	if (!token)
 		return (NULL);
 
-	/* check for a '$' . If no dollar signs, return token */
-	for (i = 0; token[i] != '$'; i++)
-		if (token[i] == '\0')
+	for (i = 0; i < 256; i++)
+		buffer[i] = 0, value[i] = 0;
+
+	for (i = 0, j = 0; token[i]; i++)
+		if (token[i] == '$' && !END(token[i + 1]))
 		{
-			new_token = _strdup(token), free(token);
-			return (new_token);
+			variable = token + i + 1;
+			for (k = 0; !END(variable[k]); k++)
+				;
+
+			if (_strncmp(variable, "$", k) == 0)
+				sprintf(value, "%d", getpid());
+			else if (_strncmp(variable, "?", k) == 0)
+				sprintf(value, "%d", shell.status);
+			else
+			{
+				variable = _getenv(_strncpy(value, variable, k));
+				if (variable)
+					_strcpy(value, variable);
+				else
+					*value = '\0';
+			}
+
+			for (l = 0; value[l]; l++)
+				buffer[j++] = value[l], value[l] = '\0';
+			i += k;
 		}
-
-	if (!token[i + 1] || token[i + 1] == ' ')
-	{
-		new_token = _strdup(token), free(token);
-		return (token);
-	}
-
-	value = _realloc(NULL, sizeof(char) * 12);
-
-	if (_strcmp(token + i, "$$") == 0)
-		sprintf(value, "%d", getpid());
-	else if (_strcmp(token + i, "$?") == 0)
-		sprintf(value, "%d", shell.status);
-	else
-		free(value), value = _getenv(token + i + 1);
-
-	/* Create token */
-	new_token = _realloc(NULL, i + _strlen(value) + 1);
-	_strncpy(new_token, token, i);
-	_strcat(new_token, value);
+		else
+		{
+			buffer[j++] = token[i];
+		}
+	buffer[j] = '\0';
 	free(token);
-	free(value);
-
-	return (replace_vars(new_token)); /* check for more variables */
+	return (_strdup(buffer));
 }

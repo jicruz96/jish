@@ -19,24 +19,24 @@ int builtin_cd(command_t *cmd)
 	/* set new directory target */
 	if (_strcmp(args[1], "-") == 0)
 	{
-		new[2] = _getenv("OLDPWD"), print_dir = true;
+		new[2] = _getenv("OLDPWD");
+		print_dir = shell.interactive;
 	}
 	else
 	{
-		new[2] = _strdup(args[1]);
+		new[2] = args[1];
 		if (!new[2] || !new[2][0])
-			free(new[2]), new[2] = _getenv("HOME");
+			new[2] = _getenv("HOME");
 	}
 
 	/* if no home dir found, just stay in cwd! */
 	if (!new[2] || !new[2][0])
-		free(new[2]), new[2] = _strdup(OLDPWD[2]);
+		new[2] = OLDPWD[2];
 
 	if (chdir(new[2]) == -1)
 	{
 		sprintf(error_msg, str, shell.name, shell.lines, "cd", new[2]);
 		write(STDERR_FD, error_msg, _strlen(error_msg));
-		free(new[2]);
 		return (2);
 	}
 
@@ -44,9 +44,8 @@ int builtin_cd(command_t *cmd)
 		write(STDOUT_FD, new[2], _strlen(new[2])), write(STDOUT_FD, "\n", 1);
 
 	/* update environment */
-	_setenv("OLDPWD", OLDPWD[2]);
 	_setenv("PWD", new[2]);
-	free(new[2]);
+	_setenv("OLDPWD", OLDPWD[2]);
 	return (EXIT_SUCCESS);
 }
 

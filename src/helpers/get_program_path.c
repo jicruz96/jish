@@ -5,48 +5,51 @@
 #include <string.h>
 
 /**
- * get_program_path - finds a program in the PATH
- * @program: program name (char *)
- * Return: full program path || just program if not found in path
+ * get_path - finds a file in the path
+ * @path_buffer: buffer
+ * @file: file name (char *)
+ * Return: full file path || NULL if not found or no permission to execute
  **/
-char *get_program_path(char *program)
+char *get_path(char *path_buffer, char *file)
 {
-	char *PATH = NULL, *path = NULL, *buffer = NULL;
+	char *path;
 	struct stat file_info;
-	int i;
+	int i = 0;
 
-	if (!program)
+	if (!file)
 		return (NULL);
 
-	for (i = 0; program[i]; i++) /* If input is a path, return copy of input */
-		if (program[i] == '/')
+	for (i = 0; file[i]; i++)
+		if (file[i] == '/')
 		{
-			if (stat(program, &file_info))
+			if (stat(file, &file_info))
 			{
-				shell.status = ENOENT;
+				shell.status = ENOENT, *path_buffer = '\0';
 				return (NULL);
 			}
 			if (!(S_IXUSR & file_info.st_mode))
 			{
-				shell.status = EACCES;
+				shell.status = EACCES, *path_buffer = '\0';
 				return (NULL);
 			}
-			return (_strdup(program));
+			return (_strcpy(path_buffer, file));
 		}
 
-	/* otherwise, check the PATH */
-	PATH = _getenv("PATH"), buffer = malloc(sizeof(char) * 256);
-	while ((path = strtok((path ? NULL : PATH), ":")))
+	for (path = _getenv("PATH"); path && *path; path = path + i + (path[i] != 0))
 	{
-		sprintf(buffer, "%s/%s", path, program);
-		if (stat(buffer, &file_info) == 0)
+		for (i = 0; path[i] && path[i] != ':'; i++)
+			;
+		sprintf(path_buffer, "%.*s/%s", i, path, file);
+		if (stat(path_buffer, &file_info) == 0)
 		{
 			if (!(S_IXUSR & file_info.st_mode))
-				shell.status = EACCES, free(buffer), buffer = NULL;
-			free(PATH);
-			return (buffer);
+			{
+				shell.status = EACCES, *path_buffer = '\0';
+				return (NULL);
+			}
+			return (path_buffer);
 		}
 	}
-	shell.status = ENOENT, free(PATH), free(buffer);
+	shell.status = ENOENT, *path_buffer = '\0';
 	return (NULL);
 }

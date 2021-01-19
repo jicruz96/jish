@@ -103,7 +103,6 @@ void execute_hshrc(void)
 	/* create path for hshrc */
 	homedir = _getenv("HOME");
 	sprintf(path, "%s/%s", homedir, ".hshrc");
-	free(homedir);
 
 	/* go get .hshrc file descriptor */
 	hshrc_fd = open(path, O_RDONLY);

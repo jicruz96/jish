@@ -42,12 +42,11 @@ void help_history(void)
  **/
 int get_history(char *history[])
 {
-	char path[256], *line = NULL, *homedir = _getenv("HOME");
+	char path[256], *line = NULL;
 	int i = 0, history_fd;
 
 	/* create path to history file */
-	sprintf(path, "%s/%s", homedir, ".hsh_history");
-	free(homedir);
+	sprintf(path, "%s/%s", _getenv("HOME"), ".hsh_history");
 
 	history_fd = open(path, O_CREAT | O_RDONLY, 0644);
 
@@ -104,12 +103,10 @@ void save_line_to_history(char *line)
 void save_history_to_file(void)
 {
 	int i, fd;
-	char *home = _getenv("HOME");
 	char history_path[256];
 
-	sprintf(history_path, "%s/%s", home, ".hsh_history");
+	sprintf(history_path, "%s/%s", _getenv("HOME"), ".hsh_history");
 	fd = open(history_path, O_WRONLY | O_APPEND);
-	free(home);
 	for (i = 0; shell.history[i]; i++)
 	{
 		if (i >= shell.history_size)

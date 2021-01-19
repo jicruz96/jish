@@ -47,7 +47,7 @@ typedef struct command_s
 {
 	int logic;
 	char *command;
-	char *path;
+	char path[256];
 	char *args[256];
 	char *in_name;
 	char *out_name;
@@ -131,14 +131,13 @@ int clean_pipes(command_t *cmd);
 /* Command configuration function declarations */
 char **command_config(command_t *cmd, char **tokens);
 char **parse_tokens(command_t *cmd, char **tokens);
-char *get_program_path(char *program);
+char *get_path(char *path_buffer, char *file);
 
 /* execve function wrapper */
 int fork_and_execute(command_t *cmd);
 
 /* built-in function declarations */
 int builtin_cd(command_t *cmd);
-int builtin_setenv(command_t *cmd);
 int builtin_alias(command_t *cmd);
 int builtin_help(command_t *cmd);
 int builtin_env(command_t *cmd);
@@ -170,11 +169,11 @@ int handle_syntax_error(char *token);
 
 /* prompt handling function declarations */
 void print_prompt(int fd);
-char *get_date_prompt(void);
-char *get_hostname_prompt(void);
-char *get_username_prompt(void);
-char *get_shellname_prompt(void);
-char *get_cwd_prompt(void);
+char *get_date_prompt(char *buffer);
+char *get_hostname_prompt(char *buffer);
+char *get_username_prompt(char *buffer);
+char *get_shellname_prompt(char *buffer);
+char *get_cwd_prompt(char *buffer);
 
 /* help function declarations */
 void help_help(void);
@@ -187,6 +186,7 @@ void help_setenv(void);
 void help_unsetenv(void);
 
 /* other helpers function declarations */
+int _unsetenv(char *key);
 int _setenv(char *key, char *value);
 char *_getenv(char *key);
 char *_realloc(char *p, int size);

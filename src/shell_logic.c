@@ -53,9 +53,10 @@ void execute_line(char **tokens)
 	command_t cmd;
 
 	for (i = 0; i < 256; i++)
-		cmd.args[i] = NULL;
+		cmd.args[i] = NULL, cmd.path[i] = '\0';
+	cmd.logic = DEFAULT_LOGIC;
 
-	while (*tokens && shell.run)
+	while (*tokens && shell.run && !LOGIC_BREAK(shell.status, cmd.logic))
 	{
 		if (IS_SEPARATOR(*tokens) || IS_REDIR_TOKEN(*tokens))
 		{
@@ -77,14 +78,11 @@ void execute_line(char **tokens)
 		if (cmd.output_fd > 2)
 			close(cmd.output_fd);
 
-		free(cmd.path), free(cmd.in_name), free(cmd.out_name);
+		free(cmd.in_name), free(cmd.out_name);
 		for (i = 0; cmd.args[i]; i++)
 			free(cmd.args[i]), cmd.args[i] = NULL;
 
 		prev_logic = cmd.logic;
-
-		if (LOGIC_BREAK(shell.status, cmd.logic))
-			break;
 	}
 
 	while (*tokens)
@@ -113,13 +111,13 @@ char **command_config(command_t *cmd, char **tokens)
 	for (i = 0; shell.builtins[i].name; i++)
 		if (_strcmp(command, shell.builtins[i].name) == 0)
 		{
-			cmd->path     = _strdup(command);
+			_strcpy(cmd->path, command);
 			cmd->executor = shell.builtins[i].function;
 			return (tokens);
 		}
 
-	cmd->path     = get_program_path(command);
-	cmd->executor = cmd->path ? &fork_and_execute : &handle_error;
+	get_path(cmd->path, command);
+	cmd->executor = cmd->path[0] ? &fork_and_execute : &handle_error;
 	return (tokens);
 }
 
