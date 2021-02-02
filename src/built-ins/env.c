@@ -3,10 +3,10 @@
 
 /**
  * builtin_env- custom env built-in. prints environment variables
- * @cmd: command struct
+ * @args: arguments
  * Return: exit status
  **/
-int builtin_env(command_t *cmd)
+int builtin_env(char *args[])
 {
 	int i;
 
@@ -16,7 +16,7 @@ int builtin_env(command_t *cmd)
 		write(STDOUT_FD, "\n", 1);
 	}
 
-	(void)cmd;
+	(void)args;
 	return (0);
 }
 

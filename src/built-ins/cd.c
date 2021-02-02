@@ -4,12 +4,12 @@
 
 /**
  * builtin_cd - custom cd (i.e. "change directory") built-in
- * @cmd: command struct
+ * @args: arguments
  * Return: exit status
  **/
-int builtin_cd(command_t *cmd)
+int builtin_cd(char *args[])
 {
-	char cwd[256], *str = "%s: %d: %s: can't cd to %s\n", **args = cmd->args;
+	char cwd[256], *str = "%s: %d: %s: can't cd to %s\n";
 	char error_msg[256], *OLDPWD[] = {0, "OLDPWD", 0}, *new[] = {0, "PWD", 0};
 	int print_dir = 0;
 
@@ -20,7 +20,7 @@ int builtin_cd(command_t *cmd)
 	if (_strcmp(args[1], "-") == 0)
 	{
 		new[2] = _getenv("OLDPWD");
-		print_dir = shell.interactive;
+		print_dir = true;
 	}
 	else
 	{

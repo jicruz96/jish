@@ -6,20 +6,21 @@
 
 /**
  * builtin_setenv - custom setenv built-in. sets new environment variable
- * @cmd: command struct
+ * @args: arguments
  * Return: exit status
  **/
-int builtin_setenv(command_t *cmd)
+int builtin_setenv(char *args[])
 {
 	/* if only "setenv" passed in, call env */
-	if (cmd->args[1] == NULL || cmd->args[2] == NULL)
+	if (args[1] == NULL || args[2] == NULL)
 	{
+		printf("1: %s\n2: %s\n", args[1], args[2]);
 		write(STDERR_FD, "Usage: setenv VARIABLE VALUE\n", 29);
 		return (1);
 	}
 
 	/* retrieve our env variable and new corresponding value */
-	return (_setenv(cmd->args[1], cmd->args[2]));
+	return (_setenv(args[1], args[2]));
 }
 
 /**

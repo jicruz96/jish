@@ -13,7 +13,7 @@ char *_realloc(char *p, int size)
 
 	new = malloc(sizeof(char) * size);
 	if (p)
-		for (i = 0; p[i] && i < size; i++)
+		for (i = 0; i < size && p[i]; i++)
 			new[i] = p[i];
 	for (; i < size; i++)
 		new[i] = '\0';

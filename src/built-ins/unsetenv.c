@@ -4,18 +4,19 @@
 
 /**
  * builtin_unsetenv- custom unsetenv built-in. deletes environment variable
- * @cmd: command struct
+ * @args: arguments
  * Return: exit status
  **/
-int builtin_unsetenv(command_t *cmd)
+int builtin_unsetenv(char *args[])
 {
-	if (cmd->args[1] == NULL)
+
+	if (args[1] == NULL)
 	{
 		write(STDERR_FILENO, "Usage: unsetenv VARIABLE\n", 25);
 		return (1);
 	}
 
-	return (_unsetenv(cmd->args[1]));
+	return (_unsetenv(args[1]));
 }
 
 /**

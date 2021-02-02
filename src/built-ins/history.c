@@ -1,19 +1,18 @@
 #include "../shell.h"
-#include "../helpers/_getline.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 
 /**
  * builtin_history - custom history built-in
- * @cmd: command struct
+ * @args: arguments
  * Return: exit status
  **/
-int builtin_history(command_t *cmd)
+int builtin_history(char *args[])
 {
 	int i;
 
-	(void)cmd;
+	(void)args;
 	for (i = 0; shell.history[i]; i++)
 		printf("%5d  %s", i, shell.history[i]);
 
@@ -42,27 +41,27 @@ void help_history(void)
  **/
 int get_history(char *history[])
 {
-	char path[256], *line = NULL;
-	int i = 0, history_fd;
+	/*char path[256], *line = NULL;*/
+	/*int i = 0, history_fd, line_size = 0;*/
 
 	/* create path to history file */
-	sprintf(path, "%s/%s", _getenv("HOME"), ".hsh_history");
+	(void)history;
+	return (0);
+	/*sprintf(path, "%s/%s", _getenv("HOME"), ".hsh_history");*/
 
-	history_fd = open(path, O_CREAT | O_RDONLY, 0644);
+	/*history_fd = open(path, O_CREAT | O_RDONLY, 0644);*/
 
-	/* copying history file contents to history struct */
-	for (i = 0; (line = _getline(history_fd)); i++)
-	{
-		/* if 4096th command, then erase array and start as first command */
-		if (i == HISTSIZE)
-			while (i)
-				free(history[i]), history[i--] = NULL;
-		history[i] = line;
-	}
+	/*for (i = 0; _getline(&line, &line_size, history_fd) > 0; i++)*/
+	/*{*/
+	/*	if (i == HISTSIZE)*/
+	/*		while (i)*/
+	/*			free(history[i]), history[i--] = NULL;*/
+	/*	history[i] = _strdup(line);*/
+	/*}*/
 
-	/* close history file */
-	close(history_fd);
-	return (i);
+	/*close(history_fd);*/
+	/*free(line);*/
+	/*return (i);*/
 }
 
 /**
