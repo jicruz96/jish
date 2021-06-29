@@ -27,7 +27,7 @@ make Makefile
 
 ### Non-interactive mode
 
-You can also use ``non-interactively. Use`echo`to pipe in a command to`hsh`. The program will execute the inputted command(s) without re-prompting.
+You can also use `hsh` non-interactively. Use`echo`to pipe in a command to`hsh`. The program will execute the inputted command(s) without re-prompting.
 
 ```
 $ echo "ls" | ./hsh
