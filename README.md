@@ -1,40 +1,33 @@
-# `jish` - A `sh` replica
+# Shell V2
 
 ---
 
 ## Overview
 
-`jish` is a UNIX command interpreter. It is a replica of the `sh` shell, built from scratch in C.
+`hsh` is a UNIX command interpreter. It is a replica of the `sh` shell, built from scratch in C. This project was developed as part of the Holberton School Low Level Systems specialization and is the second, more advanced version of the [simple shell project](https://github.com/jicruz96/JISH_A-Custom-Shell-Terminal) completed in the Foundations year.
 
-This project was developed as part of the Holberton School Low Level Systems specialization and is the second, more advanced version of the [simple shell project](https://github.com/jicruz96/shell_v1) completed in the Foundations year.
-
-This project was written by J.I. Cruz, with assistance from Gabriel Abdul-Raheem.
+This project was written by J.I. Cruz and Gabriel Abdul-Raheem.
 
 ## Installation 🛠
 
 ### Requirements
 
-* `hsh` is only available for MacOS and Linux distributions.
-* `make`
+make --version > 1
 
-Clone this repository to your local system. Use the following to compile the program and save the executable into a file named `jish`:
+Clone this repository to your local system. Use the following to compile the program and save the executable into a file named `hsh`:
 
 ```
-make
+make Makefile
 ```
 
 ## Usage
 
-### Interactive shell
-```
-$ ./jish
-```
-- Run the executable file. Use the shell as if it were your normal shell. All commands-- including pipes, redirects, and aliases-- should work. That's it!
+- Run the executable file ( ./hsh ). Use the shell. That's it!
 - Type `exit` or `Ctrl-D` to exit `hsh`.
 
 ### Non-interactive mode
 
-You can also use `jish` non-interactively. Use `echo` to pipe in a command to `jish`. The program will execute the inputted command(s) without re-prompting.
+You can also use ``non-interactively. Use`echo`to pipe in a command to`hsh`. The program will execute the inputted command(s) without re-prompting.
 
 ```
 $ echo "ls" | ./hsh
@@ -66,7 +59,7 @@ This is version 2.0 of a previous Holberton School project.
 ### J.I.'s Previous Shell
 
 - [1.0 - First release - 17 Apr 2020](https://github.com/OctopusHugz/simple_shell/tree/5f9dbb9c0bc978b5f8566eac0ce5cc05496c22a0) | _Written by J.I. and [Colson Scott](https://github.com/OctopusHugz)_
-- [1.1 - Second release - 15 Sep 2020](https://github.com/jicruz96/shell_v1) | _Because there was nothing better to do during COVID_
+- [1.1 - Second release - 15 Sep 2020](https://github.com/jicruz96/simple_shell) | _Because there was nothing better to do during COVID_
 
 ## Authors 👨🏽‍💻
 

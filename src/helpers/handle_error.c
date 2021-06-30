@@ -5,12 +5,12 @@
 
 /**
  * handle_error - prints error messages
- * @args: arguments
+ * @cmd: command node
  * Return: error code
  **/
-int handle_error(char *args[])
+int handle_error(command_t *cmd)
 {
-	char error[256], *msg, *command = args[0];
+	char error[256], *msg, *command = cmd->args[0];
 
 	if (shell.status == ENOENT)
 		msg = "not found", shell.status = 127;

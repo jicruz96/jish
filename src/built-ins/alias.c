@@ -3,16 +3,40 @@
 #include <stdio.h>
 
 /**
+ * get_alias - returns alias of a token (or token itself if no alias)
+ * @alias: alias
+ * Return: alias value
+ **/
+char *get_alias(char *alias)
+{
+	alias_t *tmp = shell.aliases;
+	char *str;
+
+	if (shell.aliases)
+		for (; tmp; tmp = tmp->next)
+			if (_strcmp(alias, tmp->alias) == 0)
+			{
+				free(alias);
+				str = get_alias(_strdup(tmp->value));
+				return (str);
+			}
+
+	str = _strdup(alias);
+	free(alias);
+	return (str);
+}
+
+/**
  * builtin_alias - builds alias and adds to alias struct
- * @args: arguments
+ * @cmd: command struct
  * Return: status
  */
-int builtin_alias(char *args[])
+int builtin_alias(command_t *cmd)
 {
 	int i = 0, j, status = 0;
 	static alias_t *last;
 	alias_t *tmp = shell.aliases, **connector;
-	char error_msg[256], *str = "%s: %s not found\n";
+	char error_msg[256], *str = "%s: %s not found\n", **args = cmd->args;
 
 	if (args[1] == NULL)
 		return (print_aliases());
@@ -100,46 +124,4 @@ void help_alias(void)
 
 	for (i = 0; lines[i]; i++)
 		_puts(lines[i]);
-}
-
-/**
- * replace_aliases - replaces aliases
- * @start: start index of shell.buf
- * Return: 0 if no alias replacement occured | 1 if yes
- **/
-int replace_aliases(int start)
-{
-	alias_t *tmp;
-	int j, shift;
-	char *ptr;
-
-	for (tmp = shell.aliases; tmp; tmp = tmp->next)
-	{
-		ptr = shell.buf + start;
-		if (_strncmp(ptr, tmp->alias, shell.buf_i - start) == 0)
-		{
-			if (tmp->size > shell.buf_i)
-			{
-				/* adjust buffer size and re-point pointer to new buffer */
-				j = tmp->size + shell.byte_count - (shell.buf_i - start);
-				increase_buffer(&shell.buf, &shell.buf_size, j);
-				ptr = shell.buf + start;
-
-				/* shift buffer contents */
-				j = shell.byte_count - 1;
-				shift = tmp->size - (shell.buf_i - start);
-				for (; j >= shell.buf_i; j--)
-					shell.buf[j + shift] = shell.buf[j];
-			}
-			else
-			{
-				_strcpy(ptr + tmp->size, ptr + shell.buf_i);
-			}
-			_strcpy(ptr, tmp->value);
-			shell.byte_count += tmp->size + (shell.buf_i - start);
-			return (1);
-		}
-	}
-
-	return (0);
 }

@@ -1,44 +1,35 @@
 #include "../shell.h"
+#include <string.h>
 #include <unistd.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
 
 /**
  * builtin_unsetenv- custom unsetenv built-in. deletes environment variable
- * @args: arguments
+ * @cmd: command struct
  * Return: exit status
  **/
-int builtin_unsetenv(char *args[])
+int builtin_unsetenv(command_t *cmd)
 {
+	int i, j;
+	char *UNSET_VARIABLE, *var, **args = cmd->args;
 
+	/* if no arguments were given, print error */
 	if (args[1] == NULL)
 	{
 		write(STDERR_FILENO, "Usage: unsetenv VARIABLE\n", 25);
 		return (1);
 	}
 
-	return (_unsetenv(args[1]));
-}
-
-/**
- * _unsetenv - custom unsetenv
- * @key: env variable to unset
- * Return: 0
- **/
-int _unsetenv(char *key)
-{
-	int i, j, key_len = _strlen(key);
+	UNSET_VARIABLE = args[1];
 
 	for (i = 0; environ[i]; i++)
 	{
-		for (j = 0; environ[i][j]; j++)
-			if (environ[i][j] == '=')
-				break;
+		var = _strdup(environ[i]);
 
 		/* if the environment variable matches the target... */
-		if (_strncmp(environ[i], key, max(j, key_len)) == 0)
+		if (_strcmp(strtok(var, "="), UNSET_VARIABLE) == 0)
 		{
+			free(var);
 			free(environ[i]);
-
 			/* adjust the environment array */
 			for (j = i + 1; environ[j]; i++, j++)
 				environ[i] = environ[j];
@@ -47,6 +38,7 @@ int _unsetenv(char *key)
 			environ[i] = NULL;
 			return (EXIT_SUCCESS);
 		}
+		free(var);
 	}
 	return (EXIT_SUCCESS);
 }

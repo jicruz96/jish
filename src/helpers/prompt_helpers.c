@@ -4,58 +4,63 @@
 
 /**
  * get_cwd_prompt - gets current working directory for prompt formatting
- * @buffer: buffer
  * Return: cwd as string
  **/
-char *get_cwd_prompt(char *buffer)
+char *get_cwd_prompt(void)
 {
-	getcwd(buffer, 256);
-	if (_strcmp(buffer, _getenv("HOME")) == 0)
-		return (_strcpy(buffer, "~"));
-	return (buffer);
+	char *cwd = malloc(sizeof(char) * 256);
+	char *home;
+
+	getcwd(cwd, 256);
+	home = _getenv("HOME");
+	if (_strcmp(cwd, home) == 0)
+	{
+		free(cwd);
+		cwd = _strdup("~");
+	}
+	free(home);
+	return (cwd);
 }
 /**
  * get_shellname_prompt - returns shell name for prompt formatted string
- * @buffer: buffer
  * Return: shellname as string
  **/
-char *get_shellname_prompt(char *buffer)
+char *get_shellname_prompt(void)
 {
-	return (_strcpy(buffer, shell.name));
+	return (_strdup(shell.name));
 }
 
 /**
  * get_username_prompt - returns username for prompt formatted string
- * @buffer: buffer
  * Return: username as string
  **/
-char *get_username_prompt(char *buffer)
+char *get_username_prompt(void)
 {
-	return (_strcpy(buffer, _getenv("USER")));
+	return (_getenv("USER"));
 }
 
 /**
  * get_hostname_prompt - returns hostname for prompt formatted string
- * @buffer: buffer
  * Return: hostname as string
  **/
-char *get_hostname_prompt(char *buffer)
+char *get_hostname_prompt(void)
 {
-	gethostname(buffer, 256);
-	return (buffer);
+	char *name = malloc(sizeof(char) * 256);
+
+	gethostname(name, 256);
+	return (name);
 }
 
 /**
  * get_date_prompt - returns date from prompt formatted string
- * @buffer: buffer
  * Return: date as string in (Weekday Month Date) format
  **/
-char *get_date_prompt(char *buffer)
+char *get_date_prompt(void)
 {
 	time_t timer;
 	char *date;
 
 	time(&timer);
 	date = ctime(&timer);
-	return (_strncpy(buffer, date, 10));
+	return (_strndup(date, 10));
 }

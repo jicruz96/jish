@@ -3,9 +3,8 @@
 #include <sys/errno.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <signal.h>
 
-shell_t shell;
+shell_t shell = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 /**
  * main - entry point to shell
@@ -18,11 +17,11 @@ int main(int argc, char *argv[])
 	int fd = STDIN_FD;
 	char *shellname = argv[0], error_msg[256];
 	builtin_t builtins[] = {
-		{"cd",       &builtin_cd},       {"exit",   &builtin_exit},
-		{"env",      &builtin_env},      {"setenv", &builtin_setenv},
-		{"unsetenv", &builtin_unsetenv}, {"alias",  &builtin_alias},
-		{"history",  &builtin_history},  {"help",   &builtin_help},
-		{"ls",       &builtin_ls},       {NULL,     NULL}
+		{"cd",          &builtin_cd},       {"exit",        &builtin_exit},
+		{"env",         &builtin_env},      {"setenv",      &builtin_setenv},
+		{"unsetenv",    &builtin_unsetenv}, {"alias",       &builtin_alias},
+		{"history",     &builtin_history},  {"help",        &builtin_help},
+		{NULL,          NULL}
 	};
 
 	if (argc > 1) /* get input/shellname if argument was passed */
@@ -53,26 +52,16 @@ int main(int argc, char *argv[])
  **/
 void shell_init(char *shellname, int input, builtin_t *builtins)
 {
-	shell.name              = shellname;
-	shell.input_fd   = input;
-	shell.lines             = 1;
-	shell.buf               = _realloc(NULL, READ_SIZE + 1);
-	shell.buf_size          = READ_SIZE + 1;
-	shell.line_i            = 0;
-	shell.buf_i             = 0;
-	shell.byte_count        = 0;
-	shell.open_vars_i       = 0;
-	shell.interactive       = isatty(input);
-	shell.run               = true;
-	shell.status            = 0;
-	shell.history           = NULL;
-	shell.aliases           = NULL;
-	shell.builtins          = builtins;
-	environ                 = _realloc_string_array(environ, false);
+	shell.lines            = 1;
+	shell.run              = true;
+	shell.name             = shellname;
+	shell.builtins         = builtins;
+	shell.interactive      = isatty(input);
+	environ                = _realloc_string_array(environ, false);
 	if (shell.interactive)
 	{
-		shell.history       = _calloc_string_array(HISTSIZE);
-		shell.history_size  = get_history(shell.history);
+		shell.history      = _calloc_string_array(HISTSIZE);
+		shell.history_size = get_history(shell.history);
 	}
 }
 
@@ -83,6 +72,10 @@ void shell_cleanup(void)
 {
 	int i;
 	alias_t *tmp;
+
+	/* Save history to history file */
+	if (shell.interactive)
+		save_history_to_file();
 
 	/* free environ array */
 	for (i = 0; environ[i]; i++)
@@ -95,16 +88,6 @@ void shell_cleanup(void)
 		tmp = shell.aliases;
 		shell.aliases = shell.aliases->next;
 		free(tmp->alias), free(tmp->value), free(tmp);
-	}
-
-	free(shell.buf);
-
-	/* free history array */
-	if (shell.history)
-	{
-		for (i = 0; shell.history[i]; i++)
-			free(shell.history[i]);
-		free(shell.history);
 	}
 }
 
@@ -120,6 +103,7 @@ void execute_hshrc(void)
 	/* create path for hshrc */
 	homedir = _getenv("HOME");
 	sprintf(path, "%s/%s", homedir, ".hshrc");
+	free(homedir);
 
 	/* go get .hshrc file descriptor */
 	hshrc_fd = open(path, O_RDONLY);
@@ -136,23 +120,4 @@ void execute_hshrc(void)
 		run_shell(hshrc_fd);
 	}
 
-}
-
-/**
- * run_shell - executes a file line by line
- * @fd: file descriptor
- * Return: exit status
- **/
-void run_shell(int fd)
-{
-	command_t *command_chain;
-
-	while (shell.run)
-	{
-		print_prompt(fd);
-		signal(SIGINT, print_prompt);
-		command_chain = parser();
-		execute_commands(command_chain);
-		shell.lines++;
-	}
 }

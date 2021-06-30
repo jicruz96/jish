@@ -18,7 +18,7 @@ char *_getenv(char *key)
 			;
 		/* compare up to either environ '=' or length of the key */
 		if (_strncmp(key, environ[i], max(j, key_len)) == 0)
-			return (environ[i] + key_len + 1);
+			return (_strdup(environ[i] + key_len + 1));
 	}
 
 	return (NULL);

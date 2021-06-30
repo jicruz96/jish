@@ -19,12 +19,13 @@ void help_help(void)
 
 /**
  * builtin_help - custom help builtin
- * @args: arguments
+ * @cmd: command struct
  * Return: 0 on success | 1 if error encountered
  **/
-int builtin_help(char *args[])
+int builtin_help(command_t *cmd)
 {
 	int i, j;
+	char **args = cmd->args;
 	char error_msg[256], *str = "%s: %s: no help topics match %s\n";
 	char *builtins[] = {"alias", "cd", "env", "exit", "help", "history",
 						"setenv", "unsetenv", NULL};

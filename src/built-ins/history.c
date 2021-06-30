@@ -1,18 +1,19 @@
 #include "../shell.h"
+#include "../helpers/_getline.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 
 /**
  * builtin_history - custom history built-in
- * @args: arguments
+ * @cmd: command struct
  * Return: exit status
  **/
-int builtin_history(char *args[])
+int builtin_history(command_t *cmd)
 {
 	int i;
 
-	(void)args;
+	(void)cmd;
 	for (i = 0; shell.history[i]; i++)
 		printf("%5d  %s", i, shell.history[i]);
 
@@ -41,27 +42,28 @@ void help_history(void)
  **/
 int get_history(char *history[])
 {
-	/*char path[256], *line = NULL;*/
-	/*int i = 0, history_fd, line_size = 0;*/
+	char path[256], *line = NULL, *homedir = _getenv("HOME");
+	int i = 0, history_fd;
 
 	/* create path to history file */
-	(void)history;
-	return (0);
-	/*sprintf(path, "%s/%s", _getenv("HOME"), ".hsh_history");*/
+	sprintf(path, "%s/%s", homedir, ".hsh_history");
+	free(homedir);
 
-	/*history_fd = open(path, O_CREAT | O_RDONLY, 0644);*/
+	history_fd = open(path, O_CREAT | O_RDONLY, 0644);
 
-	/*for (i = 0; _getline(&line, &line_size, history_fd) > 0; i++)*/
-	/*{*/
-	/*	if (i == HISTSIZE)*/
-	/*		while (i)*/
-	/*			free(history[i]), history[i--] = NULL;*/
-	/*	history[i] = _strdup(line);*/
-	/*}*/
+	/* copying history file contents to history struct */
+	for (i = 0; (line = _getline(history_fd)); i++)
+	{
+		/* if 4096th command, then erase array and start as first command */
+		if (i == HISTSIZE)
+			while (i)
+				free(history[i]), history[i--] = NULL;
+		history[i] = line;
+	}
 
-	/*close(history_fd);*/
-	/*free(line);*/
-	/*return (i);*/
+	/* close history file */
+	close(history_fd);
+	return (i);
 }
 
 /**
@@ -102,10 +104,12 @@ void save_line_to_history(char *line)
 void save_history_to_file(void)
 {
 	int i, fd;
+	char *home = _getenv("HOME");
 	char history_path[256];
 
-	sprintf(history_path, "%s/%s", _getenv("HOME"), ".hsh_history");
+	sprintf(history_path, "%s/%s", home, ".hsh_history");
 	fd = open(history_path, O_WRONLY | O_APPEND);
+	free(home);
 	for (i = 0; shell.history[i]; i++)
 	{
 		if (i >= shell.history_size)

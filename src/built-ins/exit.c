@@ -4,14 +4,13 @@
 
 /**
  * builtin_exit - custom exit built-in
- * @args: arguments
+ * @cmd: command struct
  * Return: exit status
  **/
-int builtin_exit(char *args[])
+int builtin_exit(command_t *cmd)
 {
 	int status = 0, i = 0;
-	char buf[256], *str = "%s: %d: %s: %s\n";
-	char *error_str = "exit: Illegal number";
+	char error[256], *str = "%s: %d: %s: %s\n", **args = cmd->args;
 
 	/* Check for numeric exit code */
 	if (args[1])
@@ -20,8 +19,8 @@ int builtin_exit(char *args[])
 		for (i = 0; args[1][i]; i++)
 			if (!IS_NUMERIC(args[1][i]))
 			{
-				sprintf(buf, str, shell.name, shell.lines, error_str, args[1]);
-				write(STDERR_FD, buf, _strlen(buf));
+				sprintf(error, str, shell.name, shell.lines, "exit", args[1]);
+				write(STDERR_FD, error, _strlen(error));
 				return (2);
 			}
 
