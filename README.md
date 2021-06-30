@@ -1,41 +1,48 @@
-# Shell V2
+# `jish` - A `sh` replica
 
 ---
 
 ## Overview
 
-`hsh` is a UNIX command interpreter. It is a replica of the `sh` shell, built from scratch in C. This project was developed as part of the Holberton School Low Level Systems specialization and is the second, more advanced version of the [simple shell project](https://github.com/jicruz96/JISH_A-Custom-Shell-Terminal) completed in the Foundations year.
+`jish` is a UNIX command interpreter. It is a replica of the `sh` shell, built from scratch in C.
 
-This project was written by J.I. Cruz and Gabriel Abdul-Raheem.
+This project was developed as part of the Holberton School Low Level Systems specialization and is the second, more advanced version of the [simple shell project](https://github.com/jicruz96/shell_v1) completed in the Foundations year.
+
+This project was written by J.I. Cruz, with assistance from Gabriel Abdul-Raheem.
 
 ## Installation 🛠
 
 ### Requirements
 
-make --version > 1
+* `jish` is only available for MacOS and Linux distributions.
+* `make`
 
-Clone this repository to your local system. Use the following to compile the program and save the executable into a file named `hsh`:
+Clone this repository to your local system. Use the following to compile the program and save the executable into a file named `jish`:
 
 ```
-make Makefile
+make
 ```
 
 ## Usage
 
-- Run the executable file ( ./hsh ). Use the shell. That's it!
-- Type `exit` or `Ctrl-D` to exit `hsh`.
+### Interactive shell
+```
+$ ./jish
+```
+- Run the executable file. Use the shell as if it were your normal shell. All commands-- including pipes, redirects, and aliases-- should work. That's it!
+- Type `exit` or `Ctrl-D` to exit `jish`.
 
 ### Non-interactive mode
 
-You can also use ``non-interactively. Use`echo`to pipe in a command to`hsh`. The program will execute the inputted command(s) without re-prompting.
+You can also use `jish` non-interactively. Use `echo` to pipe in a command to `jish`. The program will execute the inputted command(s) without re-prompting.
 
 ```
-$ echo "ls" | ./hsh
+$ echo "ls" | ./jish
 ```
 
 ## ✨ Features ✨
 
-`hsh` can run any executables in the PATH. The following built-in commands are also available:
+`jish` can run any executables in the PATH. The following built-in commands are also available:
 
 | Built-in                  | Use                                                                 |
 | ------------------------- | ------------------------------------------------------------------- |
@@ -59,7 +66,7 @@ This is version 2.0 of a previous Holberton School project.
 ### J.I.'s Previous Shell
 
 - [1.0 - First release - 17 Apr 2020](https://github.com/OctopusHugz/simple_shell/tree/5f9dbb9c0bc978b5f8566eac0ce5cc05496c22a0) | _Written by J.I. and [Colson Scott](https://github.com/OctopusHugz)_
-- [1.1 - Second release - 15 Sep 2020](https://github.com/jicruz96/simple_shell) | _Because there was nothing better to do during COVID_
+- [1.1 - Second release - 15 Sep 2020](https://github.com/jicruz96/shell_v1) | _Because there was nothing better to do during COVID_
 
 ## Authors 👨🏽‍💻
 
